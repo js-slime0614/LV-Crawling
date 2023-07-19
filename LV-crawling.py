@@ -3,14 +3,19 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import time
 import csv
+from datetime import datetime
 
 #드라이버 지정
 webDriver = webdriver.Chrome()
 
 #csv 파일에 저장할 요소 리스트 선언
 news_urls = []
+news_companys = []
 news_titles = []
 news_column = 0
+
+#csv 파일 이름에 지정할 datetime 출력
+todayTime = datetime.today().strftime("%Y-%m-%d")
 
 #사이트 열기
 webDriver.get('https://news.naver.com/')
@@ -25,16 +30,16 @@ search = webDriver.find_element(By.CSS_SELECTOR, 'input.u_it._search_input')
 search.click()
 
 #검색어 입력
-searchWord = '재난안전'
+searchWord = '부동산'
 search.send_keys(searchWord)
 search.send_keys(Keys.ENTER)
 webDriver.switch_to.window(webDriver.window_handles[1])
 
 #데이터 csv 저장
-f = open('data.csv', 'w', encoding='utf-8', newline='')
+f = open(searchWord + todayTime + '.csv', 'w', encoding='utf-8', newline='')
 wr = csv.writer(f)
-def append_csv(column, category, news_title, news_url):
-    wr.writerow([column, category, news_title, news_url])
+def append_csv(column, category, news_company ,news_title, news_url):
+    wr.writerow([column, news_company, category, news_title, news_url])
     print(column, '번째 csv 요소 삽입완료')
 
 while(1) :
@@ -43,6 +48,9 @@ while(1) :
     titles = webDriver.find_elements(By.CSS_SELECTOR,'a.news_tit')
     for i in titles:
         news_titles.append(i.text)
+    companys = webDriver.find_elements(By.CSS_SELECTOR, "div.news_info > div.info_group > a.info.press")
+    for i in companys:
+        news_companys.append(i.text)
 
     for i in ems:
         i.click()
@@ -77,29 +85,7 @@ while(1) :
     if len(news_urls) != 0:
         csv_input_length = len(news_urls) - news_column
         for i in range(csv_input_length):
-            append_csv(news_column, searchWord, news_titles[news_column], news_urls[news_column])
+            append_csv(news_column, news_companys[news_column], searchWord, news_titles[news_column], news_urls[news_column])
             news_column += 1
 
 f.close()
-
-
-
-# def append_csv(company_name, news_data, news_cloumns):
-    
-#     logging.basicConfig(filename='./Logs/append_csv_log.log', level=logging.ERROR)
-    
-#     try:
-#         df = pd.DataFrame(news_data)
-#         df.columns = news_cloumns
-#         df.to_csv(f'.\\company_news_data\\{company_name}.csv',encoding='utf-8-sig',index=False)
-
-#     except Exception as e:
-#         print('append csv Error: {}'.format(e))
-#         logging.error(traceback.format_exc())
-#         return "error"
-
-# #크롤링한 데이터 csv 파일에 저장 
-# if len(news_dates) != 0:
-#     news_data = zip(news_dates, news_titles, news_contents, news_urls)
-#     news_columns = ['Date', 'Title', 'Content', 'URL']
-#     append_csv(searchWord, news_data, news_columns)
