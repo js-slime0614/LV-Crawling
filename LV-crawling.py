@@ -30,13 +30,13 @@ search = webDriver.find_element(By.CSS_SELECTOR, 'input.u_it._search_input')
 search.click()
 
 #검색어 입력
-searchWord = '부동산'
+searchWord = '호우주의'
 search.send_keys(searchWord)
 search.send_keys(Keys.ENTER)
 webDriver.switch_to.window(webDriver.window_handles[1])
 
 #데이터 csv 저장
-f = open(searchWord + todayTime + '.csv', 'w', encoding='utf-8', newline='')
+f = open(todayTime + searchWord + '.csv', 'w', encoding='utf-8', newline='')
 wr = csv.writer(f)
 def append_csv(column, category, news_company ,news_title, news_url):
     wr.writerow([column, news_company, category, news_title, news_url])
@@ -45,9 +45,13 @@ def append_csv(column, category, news_company ,news_title, news_url):
 while(1) :
     #네이버뉴스 클릭
     ems = webDriver.find_elements(By.CSS_SELECTOR, 'div.news_info > div.info_group > a:nth-child(3)')
+    
+    #뉴스 타이틀 수짐
     titles = webDriver.find_elements(By.CSS_SELECTOR,'a.news_tit')
     for i in titles:
         news_titles.append(i.text)
+
+    #언론사 정보 수집
     companys = webDriver.find_elements(By.CSS_SELECTOR, "div.news_info > div.info_group > a.info.press")
     for i in companys:
         news_companys.append(i.text)
