@@ -24,7 +24,7 @@ todayTime = datetime.today().strftime("%Y-%m-%d")
 # 104 - 세계 
 # 105 - IT/과학
 
-search_num = 2
+search_num = 0
 
 category_num = ['100', '101', '102', '103','104','105']
 category_name = ['정치', '경제', '사회','생활문화', '세계','IT과학']
@@ -32,7 +32,7 @@ current_page = 1
 #네이버뉴스 사이트 열기
 base_url = 'https://news.naver.com/main/main.naver?mode=LSD&mid=shm&sid1=' + category_num[search_num]
 webDriver.get(base_url)
-webDriver.implicitly_wait(2) #로딩 끝날때까지 10초 기다리기
+webDriver.implicitly_wait(10) #로딩 끝날때까지 10초 기다리기
 
 #데이터 csv 저장
 f = open(todayTime + category_name[search_num] + '.csv', 'w', encoding='utf-8', newline='')
@@ -63,7 +63,7 @@ while(1) :
 
     #페이지 바꾸기
     webDriver.get(base_url + '#&date=%2000:00:00&page=' + str(current_page))
-    time.sleep(10)
+    time.sleep(5)
     current_page += 1
 
     #csv 파일에 데이터 입력
