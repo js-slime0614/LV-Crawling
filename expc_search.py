@@ -4,8 +4,6 @@ import xml.etree.ElementTree as ET
 import csv
 import re
 
-to_crawling_jo_num = 931
-search_word = ""
 data_num = []
 
 def send_api(path, method, type):
@@ -32,7 +30,6 @@ def send_api(path, method, type):
         print(ex)
 
 # 호출 예시
-# email @ 
 def crawling_law(user_email, num_variable, search_service):
     if search_service == 'search':
         api = send_api("OC=" + user_email + "&target=expc&type=XML&display=100&page=" + str(num_variable), "GET", search_service)
@@ -57,12 +54,13 @@ def crawling_law(user_email, num_variable, search_service):
         append_csv(name_of_expc.text, question_expc.text, answer_expc.text, expc_reason.text)
 
 # 데이터 csv 파일로 저장
-f = open(search_word + '법령해석례.csv', 'w', encoding='utf-8', newline='')
+f = open('법령해석례.csv', 'w', encoding='utf-8', newline='')
 wr = csv.writer(f)
 def append_csv(name_of_expc, question_expc, answer_expc, expc_reason):
     name_of_expc = re.sub('<.*?>', '', name_of_expc)
     name_of_expc = re.sub('\n', '' , name_of_expc)
     
+    # 내용이 없는경우 예외처리
     try:
         question_expc = re.sub('<.*?>', '', question_expc)
         question_expc = re.sub('\n', '' , question_expc)
