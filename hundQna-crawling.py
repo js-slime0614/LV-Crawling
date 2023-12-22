@@ -16,13 +16,15 @@ webDriver.implicitly_wait(10) #로딩 끝날때까지 10초 기다리기
 f = open('백문백답.csv', 'w', encoding='utf-8', newline='')
 wr = csv.writer(f)
 
-def append_csv(category, question, answer):
+def append_csv(category, question, answer, question_num, answer_num):
     wr.writerow([category, question, answer])
-    print('csv 요소 삽입완료')
+    print('Question : ' + str(question_num) + ' | Answer : ' + str(answer_num) + 'csv 요소 삽입완료')
 
-#카테고리 선언
+#카테고리 담을 배열 선언
 categories = []
 category_num = 1
+questions_num = 0
+answers_num = 0
 
 while(1) :
 
@@ -35,23 +37,26 @@ while(1) :
     categories.append(cliked_category.text)
     cliked_category.click()
     time.sleep(2)
-
+    
+    #크롤링위한 반복문
     while(1) :
-
         #백문백답 현재 페이지의 Question append
         current_page_questions = webDriver.find_elements(By.CSS_SELECTOR, 'div > div.ttl > a')
         for append_questions in current_page_questions:
             questions.append(append_questions.text)
+            questions_num += 1
 
         #백문백답 현재 페이지의 Answer append
         current_page_answers = webDriver.find_elements(By.CSS_SELECTOR, 'div > div.ans > p')
         for append_answers in current_page_answers:
             answers.append(append_answers.text)
+            answers_num += 1
 
         #다음페이지로 넘어가는 btn 클릭
         try:
             btn_next = webDriver.find_element(By.CSS_SELECTOR, '#Ak_contents > div.vote_list > div.paging > a.nex1')
             btn_next.click()
+            time.sleep(2)
         except:
             break
 
@@ -59,7 +64,7 @@ while(1) :
     if len(questions) != 0:
         csv_input_length = len(questions)
         for i in range(csv_input_length):
-            append_csv(categories[category_num - 1],questions[i],answers[i])
+            append_csv(categories[category_num - 1],questions[i],answers[i],questions_num,answers_num)
     if category_num >= 18:
         break
     else:

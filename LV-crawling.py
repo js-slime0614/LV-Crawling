@@ -30,7 +30,7 @@ search = webDriver.find_element(By.CSS_SELECTOR, 'input.u_it._search_input')
 search.click()
 
 #검색어 입력
-searchWord = '호우주의'
+searchWord = '금융사기'   # 서치 키워드
 search.send_keys(searchWord)
 search.send_keys(Keys.ENTER)
 webDriver.switch_to.window(webDriver.window_handles[1])
@@ -61,7 +61,7 @@ while(1) :
 
         # 현재탭에 접근
         webDriver.switch_to.window(webDriver.window_handles[2])
-        time.sleep(2) #대기시간 변경 가능
+        time.sleep(2) #대기시간
 
         # 네이버 뉴스 url만 가져오기
         url = webDriver.current_url

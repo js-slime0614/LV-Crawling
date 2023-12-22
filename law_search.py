@@ -3,8 +3,10 @@ import requests
 import re
 import json
 import csv
+import json
 
 data_num = []
+data_to_json_dic = []
 
 def send_api(path, method, type):
     API_HOST1 = "https://www.law.go.kr/DRF/lawSearch.do?"
@@ -69,25 +71,32 @@ def crawling_law_data(user_email, law_ID):
             temp = temp + law_contents[i]
         law_content_data.append(temp)
         # print(law_content_data)
-
+        
     print(clean_string(law_name))
     for law_content in law_content_data:
-        append_csv(clean_string(law_name), law_content)
-
+        # append_csv(clean_string(law_name), law_content)
+        data_to_json_dic.append({'name':clean_string(law_name), 'content':law_content})
 
 #CDATA 부분 제거
 def clean_string(string_data):
     return_data = re.sub("<!.CDATA.", '', string_data)
     return_data = re.sub("].*", "", return_data)
     return return_data
-# 데이터 csv 파일로 저장
-f = open('현행법령.csv', 'w', encoding='utf-8', newline='')
-wr = csv.writer(f)
-def append_csv(law_name, law_content):
-    wr.writerow([law_name, law_content])
 
-append_csv("법령명", "법령조문내용")
 for data in lawID_list:
     crawling_law_data('parkjs0052', data)
 
-f.close()
+with open('./현행법령.json', 'w', encoding='UTF-8-sig') as f:
+    json.dump(data_to_json_dic, f, ensure_ascii=False, indent=4)
+
+# # 데이터 csv 파일로 저장
+# f = open('현행법령.csv', 'w', encoding='utf-8', newline='')
+# wr = csv.writer(f)
+# def append_csv(law_name, law_content):
+#     wr.writerow([law_name, law_content])
+
+# # append_csv("법령명", "법령조문내용")
+# for data in lawID_list:
+#     crawling_law_data('parkjs0052', data)
+
+# f.close()
