@@ -3,10 +3,12 @@ import json
 import xml.etree.ElementTree as ET
 import csv
 import re
+import json
 
 to_crawling_jo_num = 931
 search_word = ""
 data_num = []
+data_to_json = []
 
 def send_api(path, method, type):
     API_HOST1 = "http://www.law.go.kr/DRF/lawSearch.do?"
@@ -60,8 +62,8 @@ def crawling_law(user_email, num_variable, search_service):
 
 
 # 데이터 csv 파일로 저장
-f = open(search_word + '판례.csv', 'w', encoding='utf-8', newline='')
-wr = csv.writer(f)
+# f = open(search_word + '판례.csv', 'w', encoding='utf-8', newline='')
+# wr = csv.writer(f)
 def append_csv(num_of_prec, name_of_prec, prec_consider, why_prec, reference, prec_contents):
     num_of_prec = re.sub('<.*?>', '', num_of_prec)
     num_of_prec = re.sub('\n', '' , num_of_prec)
@@ -90,9 +92,12 @@ def append_csv(num_of_prec, name_of_prec, prec_consider, why_prec, reference, pr
         prec_contents = re.sub('\n', '' , prec_contents)
     except:
         print("실패")
-    wr.writerow([num_of_prec, name_of_prec , prec_consider, why_prec, reference, prec_contents])
+    # wr.writerow([num_of_prec, name_of_prec , prec_consider, why_prec, reference, prec_contents])
+    data_to_json.append({'사건명':name_of_prec,'판시사항':prec_consider,'판결요지':why_prec,'참조조문':reference,'판례내용':prec_contents})
+    with open('./판례.json', 'w', encoding='UTF-8-sig') as f:
+        json.dump(data_to_json, f, ensure_ascii=False, indent=4)
 
-append_csv('판례일련번호', '사건명', '판시사항', '판결요지', '참조조문','판례내용')
+# append_csv('판례일련번호', '사건명', '판시사항', '판결요지', '참조조문','판례내용')
 for page_num in range(1,864):
     data = crawling_law('parkjs0052', page_num, "search")
     print(page_num)
@@ -102,4 +107,4 @@ for crawl_data in data:
 
 
 
-f.close()
+# f.close()
